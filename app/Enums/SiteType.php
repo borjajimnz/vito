@@ -15,4 +15,6 @@ final class SiteType
     const PHPMYADMIN = 'phpmyadmin';
 
     const REVERSE_PROXY = 'reverse-proxy';
+
+    const NODEJS = 'nodejs';
 }

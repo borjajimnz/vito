@@ -53,5 +53,9 @@
         </x-slot>
     </x-card-header>
 
+    <div class="mb-6">
+        @include("application.reverse-proxy-app")
+    </div>
+
     @include("application.deployments-list")
 </div>

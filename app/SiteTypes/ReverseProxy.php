@@ -16,6 +16,7 @@ class ReverseProxy extends AbstractSiteType
     {
         return [
             SiteFeature::SSL,
+            SiteFeature::QUEUES,
         ];
     }
 

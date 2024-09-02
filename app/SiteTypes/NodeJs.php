@@ -3,10 +3,15 @@
 namespace App\SiteTypes;
 
 use App\Enums\SiteFeature;
+use App\SSH\Git\Git;
+use App\SSH\HasScripts;
 use App\SSH\Services\Webserver\Webserver;
+use Illuminate\Validation\Rule;
 
-class ReverseProxy extends AbstractSiteType
+class NodeJs extends AbstractSiteType
 {
+    use HasScripts;
+
     public function language(): string
     {
         return 'reverse-proxy';
@@ -26,14 +31,23 @@ class ReverseProxy extends AbstractSiteType
     {
         return [
             'port' => 'required|integer',
-            'auto-installed' => 'sometimes',
+            'node_version' => [
+                'required',
+            ],
+            'source_control' => [
+                'required',
+                Rule::exists('source_controls', 'id'),
+            ],
         ];
     }
 
     public function createFields(array $input): array
     {
         return [
-            'web_directory' => 'public_html',
+            'source_control_id' => $input['source_control'] ?? '',
+            'repository' => $input['repository'] ?? '',
+            'branch' => $input['branch'] ?? '',
+            'node_version' => $input['node_version'] ?? '',
         ];
     }
 
@@ -42,7 +56,7 @@ class ReverseProxy extends AbstractSiteType
         return [
             'url' => $this->site->getUrl(),
             'port' => $input['port'],
-            'auto-installed' => $input['auto-installed'] ?? null,
+            'node_version' => $input['node_version'] ?? '',
         ];
     }
 
@@ -51,7 +65,21 @@ class ReverseProxy extends AbstractSiteType
         /** @var Webserver $webserver */
         $webserver = $this->site->server->webserver()->handler();
         $webserver->createVHost($this->site);
-        $this->progress(65);
+        $this->progress(15);
+        if (data_get($this->site, 'repository')) {
+            $this->deployKey();
+            $this->progress(30);
+            app(Git::class)->clone($this->site);
+            $this->progress(65);
+        }
+
+        $this->site->server->ssh()->exec(
+            $this->getScript('install-nvm.sh', [
+                'node_version' => data_get($this->site, 'type_data.node_version')
+            ]),
+            'install-node-version'
+        );
+        $this->progress(75);
     }
 
     public function editRules(array $input): array

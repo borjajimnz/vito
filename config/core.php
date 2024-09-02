@@ -158,7 +158,6 @@ return [
         'ufw' => 'firewall',
         'supervisor' => 'process_manager',
         'vito-agent' => 'monitoring',
-        'stalwart-mail' => 'email_service',
         'remote-monitor' => 'monitoring',
     ],
     'service_handlers' => [
@@ -167,7 +166,6 @@ return [
         'mariadb' => \App\SSH\Services\Database\Mariadb::class,
         'postgresql' => \App\SSH\Services\Database\Postgresql::class,
         'redis' => \App\SSH\Services\Redis\Redis::class,
-        'stalwart-mail' => \App\SSH\Services\EmailServers\StalwartMail::class,
         'php' => \App\SSH\Services\PHP\PHP::class,
         'ufw' => \App\SSH\Services\Firewall\Ufw::class,
         'supervisor' => \App\SSH\Services\ProcessManager\Supervisor::class,
@@ -327,17 +325,6 @@ return [
                 'latest' => 'vito-agent',
             ],
         ],
-        'stalwart-mail' => [
-            \App\Enums\OperatingSystem::UBUNTU20 => [
-                'latest' => 'stalwart-mail',
-            ],
-            \App\Enums\OperatingSystem::UBUNTU22 => [
-                'latest' => 'stalwart-mail',
-            ],
-            \App\Enums\OperatingSystem::UBUNTU24 => [
-                'latest' => 'stalwart-mail',
-            ],
-        ],
     ],
 
     /*
@@ -350,6 +337,7 @@ return [
         \App\Enums\SiteType::WORDPRESS,
         \App\Enums\SiteType::PHPMYADMIN,
         \App\Enums\SiteType::REVERSE_PROXY,
+        \App\Enums\SiteType::NODEJS,
     ],
     'site_types_class' => [
         \App\Enums\SiteType::PHP => \App\SiteTypes\PHPSite::class,
@@ -358,6 +346,7 @@ return [
         \App\Enums\SiteType::WORDPRESS => \App\SiteTypes\Wordpress::class,
         \App\Enums\SiteType::PHPMYADMIN => \App\SiteTypes\PHPMyAdmin::class,
         \App\Enums\SiteType::REVERSE_PROXY => \App\SiteTypes\ReverseProxy::class,
+        \App\Enums\SiteType::NODEJS => \App\SiteTypes\NodeJs::class,
     ],
 
     /*
